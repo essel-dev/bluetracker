@@ -86,7 +86,7 @@ legacy_tox_ini = """
 
 	[testenv:mypy]
 	deps = mypy
-	commands = mypy --install-types
+	commands = mypy --install-types --non-interactive
 
 	[testenv:darglint]
 	deps = darglint

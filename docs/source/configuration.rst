@@ -64,4 +64,3 @@ The available options are shown in the table below.
             - Unique device mac address.
           * - ``name``
             - Unique device name.
-

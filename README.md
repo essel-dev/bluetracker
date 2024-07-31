@@ -1,8 +1,6 @@
 # bluetracker
 
-[![Tests](https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml/badge.svg)](https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml)
-
-[![PyPi](https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml/badge.svg)](https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml)
+[![Tests](https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml/badge.svg)](https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml)  [![PyPi](https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml/badge.svg)](https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml)
 
 <!-- Documentation Status -->
 

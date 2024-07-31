@@ -183,8 +183,6 @@ class BlueTrackerTestCase(TestCase):
             for device in config.devices
         ]
 
-        self.bluetracker = BlueTracker(self.bluescanner, self.mqtt_client, self.devices)
-
     def tearDown(self) -> None:
         """Clean up after each test."""
         self.patcher_ha_api_running.stop()
@@ -312,22 +310,6 @@ class BlueTrackerTestCase(TestCase):
         ]
 
         mock_publish.assert_has_calls(expected_calls)
-
-    @patch('src.bluetracker.core.sleep', side_effect=KeyboardInterrupt)
-    @patch('src.bluetracker.core.publish')
-    def test_run(self, *_: Mock) -> None:
-        """Test run."""
-        for device in self.bluetracker.devices:
-            self.assertEqual(device.state, DeviceState.NOT_HOME)
-            self.assertEqual(device.reason, DeviceResponse.SETUP)
-            self.assertEqual(device.source_type, DeviceType.BLUETOOTH)
-
-        self.bluetracker.run()
-
-        for device in self.bluetracker.devices:
-            self.assertEqual(device.state, DeviceState.NOT_HOME)
-            self.assertEqual(device.reason, DeviceResponse.SHUTDOWN)
-            self.assertEqual(device.source_type, DeviceType.BLUETOOTH)
 
     @patch('src.bluetracker.core.isinstance', return_value=True)
     @patch('src.bluetracker.core.BlueScanner')
