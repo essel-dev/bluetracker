@@ -1,0 +1,148 @@
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools', 'setuptools_scm[toml]']
+
+[tool.setuptools_scm]
+
+[tool.setuptools.package-data]
+bluetracker = [
+  'py.typed',
+  'config.toml',
+]
+
+[project]
+description = 'Track Bluetooth Classic devices and send updates to Home Assistant through MQTT.'
+name = 'bluetracker'
+
+authors = [{name = 'essel-dev'}]
+classifiers = [
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'Typing :: Typed',
+  'License :: OSI Approved :: MIT License',
+  'Operating System :: POSIX :: Linux',
+]
+dynamic = ['version']
+keywords = [
+  'device-tracker',
+  'bluetooth-classic',
+  'home-assistant',
+  'raspberry-pi',
+  'mqtt',
+]
+license = {file = 'LICENSE'}
+readme = 'README.md'
+requires-python = '>=3.11'
+
+dependencies = [
+  'paho-mqtt == 2.1.*',
+  'requests == 2.32.*',
+]
+
+[project.scripts]
+bluetracker = 'bluetracker.__main__:main'
+
+[project.urls]
+'Bug Tracker' = 'https://github.com/essel-dev/bluetracker/issues'
+'Changelog' = 'https://github.com/essel-dev/bluetracker/releases'
+'Documentation' = 'https://bluetracker.readthedocs.io/'
+'GitHub' = 'https://github.com/essel-dev/bluetracker'
+
+[project.optional-dependencies]
+dev = [
+  'pre-commit',
+  'tox',
+  'sphinx',
+  'sphinx-rtd-theme',
+]
+
+[tool.tox]
+legacy_tox_ini = """
+	[tox]
+	envlist =
+		py{311,312}
+        ruff-format
+		ruff-lint
+		mypy
+		darglint
+		pre-commit
+		docs
+
+	[testenv]
+	package = wheel
+	wheel_build_env = .pkg
+	deps = coverage
+	commands =
+		coverage run -m unittest discover
+		py312: coverage report -m
+
+	[testenv:ruff-lint]
+	deps = ruff
+	commands = ruff check --fix
+
+	[testenv:ruff-format]
+	deps = ruff
+	commands = ruff format
+
+	[testenv:mypy]
+	deps = mypy
+	commands = mypy --install-types
+
+	[testenv:darglint]
+	deps = darglint
+	commands = darglint -s google src
+
+	[testenv:pre-commit]
+	deps = pre-commit
+	commands = pre-commit run --all-files
+
+	[testenv:docs]
+	changedir=docs/source
+	deps =
+		sphinx
+		sphinx-rtd-theme
+	allowlist_externals = make
+	commands = sphinx-build -W -b html -d {envtmpdir}/doctrees . {envtmpdir}/html
+
+	[gh-actions]
+	python =
+		3.11: py311
+		3.12: py312, ruff-lint, ruff-format, mypy, darglint
+"""
+
+[tool.coverage.run]
+source = [
+  'src',
+]
+
+[tool.ruff.lint]
+ignore = [
+  'PT', # pytest
+]
+select = [
+  'ALL',
+]
+
+[tool.ruff.lint.per-file-ignores]
+'docs/source/conf.py' = ['INP001'] # __init__.py missing
+'src/bluetracker/__main__.py' = ['T201'] # print
+'tests/unit/bluetracker/test_core.py' = ['SLF001'] # Private member accessed
+'tests/unit/bluetracker/utils/test_mqtt_messages.py' = ['SLF001'] # Private member accessed
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
+
+[tool.ruff.lint.pydocstyle]
+convention = 'google'
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = 'single'
+
+[tool.mypy]
+enable_error_code = ['ignore-without-code', 'redundant-expr', 'truthy-bool']
+explicit_package_bases = true
+namespace_packages = true
+show_error_codes = true
+strict = true
+warn_unreachable = true

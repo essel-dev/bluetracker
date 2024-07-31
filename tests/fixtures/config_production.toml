@@ -1,0 +1,22 @@
+environment = 'production' # use development, testing or production
+
+[bluetooth]
+consider_away = 180
+scan_interval = 12
+scan_timeout = 3
+
+[mqtt]
+discovery_topic_prefix = 'homeassistant'
+homeassistant_token = 'a_token'
+host = '127.0.0.1'
+password = ''
+port = 1883
+username = ''
+
+[[devices]]
+mac = 'aa:bb:cc:dd:ee:f0'
+name = 'Device 1'
+
+[[devices]]
+mac = 'aa:bb:cc:dd:ee:f1'
+name = 'Device 2'
