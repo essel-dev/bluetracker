@@ -68,6 +68,12 @@ legacy_tox_ini = """
 		pre-commit
 		docs
 
+	[testenv:py311]
+	basepython = python3.11
+
+	[testenv:py312]
+	basepython = python3.12
+
 	[testenv]
 	package = wheel
 	wheel_build_env = .pkg
