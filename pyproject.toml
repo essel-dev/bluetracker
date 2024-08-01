@@ -68,12 +68,6 @@ legacy_tox_ini = """
 		pre-commit
 		docs
 
-	[testenv:py311]
-	basepython = python3.11
-
-	[testenv:py312]
-	basepython = python3.12
-
 	[testenv]
 	package = wheel
 	wheel_build_env = .pkg
@@ -148,6 +142,7 @@ quote-style = 'single'
 [tool.mypy]
 enable_error_code = ['ignore-without-code', 'redundant-expr', 'truthy-bool']
 explicit_package_bases = true
+files = 'src, tests'
 namespace_packages = true
 show_error_codes = true
 strict = true
