@@ -90,7 +90,8 @@ class HomeAssistantConfigError(ConfigError):
     def __init__(self) -> None:
         """Initialize."""
         message = (
-            'Could not connect to Home Assistant, verify host ip address and token'
+            'Could not connect to Home Assistant, verify it is running, host ip'
+            ' address and token'
         )
 
         super().__init__(message)

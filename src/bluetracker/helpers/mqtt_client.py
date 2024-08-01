@@ -58,12 +58,8 @@ class MqttClient:
         """Indicates whether the client is currently connected to the MQTT broker."""
 
         self.is_homeassistant_online: bool = False
-        """Indicates whether Home Assistant is currently online based on the
-        received MQTT messages.
-
-        This attribute is typically updated by the `_on_message` method
-        when receiving status messages from Home Assistant.
-        """
+        """Determines Home Assistant's online status by checking both MQTT messages and
+        Home Assistant's Rest API."""
 
         self._client.will_set(f'{client_id}/status', b'offline', retain=True)
 
