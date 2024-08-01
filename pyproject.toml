@@ -11,7 +11,7 @@ bluetracker = [
 ]
 
 [project]
-description = 'Track Bluetooth Classic devices and send updates to Home Assistant through MQTT.'
+description = 'Monitor Bluetooth Classic devices and integrate them into Home Assistant via MQTT.'
 name = 'bluetracker'
 
 authors = [{name = 'essel-dev'}]
