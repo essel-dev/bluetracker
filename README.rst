@@ -22,11 +22,13 @@ Home Assistant setup via MQTT, even with a modest Raspberry Pi Zero W.
 See it in action:
 
 .. image:: docs/source/_static/example-mqtt.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-mqtt.png
   :alt: BlueTracker device state example
 
 |
 
 .. image:: docs/source/_static/example-attributes.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-attributes.png
   :alt: BlueTracker device attributes example
 
 
