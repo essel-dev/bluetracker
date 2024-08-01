@@ -6,24 +6,16 @@
 BlueTracker Documentation
 =========================
 
-Track Bluetooth Classic devices and send updates to Home Assistant through MQTT.
-
-Example screenshots of Bluetooth Classic devices in Home Assistant:
-
-.. image:: _static/example-mqtt.png
-  :alt: BlueTracker device state example
-
-|
-
-.. image:: _static/example-attributes.png
-  :alt: BlueTracker device attributes example
+.. include:: ../../README.rst
+  :start-after: .. include_intro_start
+  :end-before: .. include_intro_end
 
 
 Contents
 --------
 
 .. toctree::
-  :maxdepth: 3
+  :maxdepth: 2
 
   installation
   configuration

@@ -1,7 +1,7 @@
 Installation
 ============
 
-.. note:: Instructions below have been tested on a Raspberry Zero W.
+.. note:: Instructions below have been tested on a Raspberry Pi Zero W Rev 1.1 and Zero 2.
 
 
 On Home Assistant
@@ -123,4 +123,4 @@ Check the output.
 
 .. code-block:: console
 
-    sudo journalctl -u bluetracker.service -n 10
+    journalctl -u bluetracker.service -n 10
