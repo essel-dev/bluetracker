@@ -4,6 +4,7 @@ import sys
 from logging import getLogger
 from socket import gaierror, gethostname
 from time import sleep
+from typing import Any
 
 from paho.mqtt.client import Client
 
@@ -42,10 +43,7 @@ class MqttClient:
         self._host: str = host
         self._port: int = port
 
-        self._client: Client = Client(  # type: ignore[misc]
-            CallbackAPIVersion.VERSION2,  # type: ignore[arg-type]
-            client_id=client_id,
-        )
+        self._client: Client = Client(CallbackAPIVersion.VERSION2, client_id=client_id)
         self._client.username_pw_set(username, password)
 
         self._discovery_topic_prefix = discovery_topic_prefix
@@ -54,7 +52,7 @@ class MqttClient:
 
         self._client.on_connect = self._on_connect
         self._client.on_disconnect = self._on_disconnect
-        self._client.on_message = self._on_message
+        self._client.on_message = self._on_message  # type: ignore[assignment]
 
         self.is_connected: bool = False
         """Indicates whether the client is currently connected to the MQTT broker."""
@@ -129,7 +127,7 @@ class MqttClient:
 
         _LOGGER.info('Reconnecting to MQTT broker...')
 
-    def _on_message(self, client, userdata, message: bytes) -> None:  # noqa: ARG002, ANN001
+    def _on_message(self, client: Client, userdata: Any, message: bytes) -> None:  # noqa: ARG002,ANN401  # type: ignore[no-untyped-def]
         """On message set Home Assistant status.
 
         When a PUBLISH message is received from the server.
@@ -139,7 +137,7 @@ class MqttClient:
             userdata: The user data.
             message: The message.
         """
-        status = message.payload.decode()
+        status = message.payload.decode()  # type: ignore[attr-defined]
         self.is_homeassistant_online = status == 'online'
 
         _LOGGER.debug('Home Assistant online: %s', self.is_homeassistant_online)

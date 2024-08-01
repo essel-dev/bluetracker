@@ -15,20 +15,20 @@ from bluetracker.utils.logging import set_logging
 
 def _create_bluescanner(config: dict[str, int]) -> BlueScanner:
     return BlueScanner(
-        int(config['scan_interval']),
-        int(config['scan_timeout']),
-        int(config['consider_away']),
+        config['scan_interval'],
+        config['scan_timeout'],
+        config['consider_away'],
     )
 
 
 def _create_mqtt_client(config: dict[str, str | int]) -> MqttClient:
     return MqttClient(
-        config['host'],
+        str(config['host']),
         int(config['port']),
-        config['username'],
-        config['password'],
-        config['homeassistant_token'],
-        config['discovery_topic_prefix'],
+        str(config['username']),
+        str(config['password']),
+        str(config['homeassistant_token']),
+        str(config['discovery_topic_prefix']),
     )
 
 
@@ -40,7 +40,7 @@ def _create_devices(devices: list[dict[str, str]]) -> list[Device]:
 
 
 def _config_path() -> str:
-    src_config = files('bluetracker').joinpath('config.toml')
+    src_config = str(files('bluetracker').joinpath('config.toml'))
     dst_config = Path.cwd().joinpath('bluetracker_config.toml')
 
     if not dst_config.exists():
@@ -51,7 +51,7 @@ def _config_path() -> str:
     else:
         print(f'Configuration file found at {dst_config}')
 
-    return dst_config
+    return dst_config.as_posix()
 
 
 def main() -> None:

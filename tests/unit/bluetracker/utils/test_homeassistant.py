@@ -16,9 +16,14 @@ class HomeAssistantTestCase(TestCase):
     @patch('src.bluetracker.utils.homeassistant.get')
     def test_api_running(self, mock_get: Mock) -> None:
         """Test Home Assistant is running."""
-        mock_response = Response()
+
+        def mock_json() -> dict[str, str]:
+            return {'message': 'API running.'}
+
+        mock_response = Mock()
         mock_response.status_code = 200
-        mock_response.json = lambda: {'message': 'API running.'}
+        mock_response.json = mock_json
+
         mock_get.return_value = mock_response
 
         self.assertTrue(is_homeassistant_running('your_host', 'your_token'))

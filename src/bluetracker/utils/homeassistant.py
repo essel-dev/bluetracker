@@ -4,7 +4,7 @@ from contextlib import suppress
 from logging import getLogger
 from socket import gaierror
 
-from requests import RequestException, get
+from requests import JSONDecodeError, RequestException, get
 
 _LOGGER = getLogger(__name__)
 
@@ -40,7 +40,7 @@ def is_homeassistant_running(ip_address: str, token: str) -> bool:
         response = get(url, headers=headers, timeout=10)
 
         if response.status_code == STATUS_OK:
-            with suppress(ZeroDivisionError):
+            with suppress(JSONDecodeError):
                 is_online = response.json().get('message') == API_RUNNING_MESSAGE
 
     _LOGGER.debug('Home Assistant online: %s', is_online)

@@ -15,13 +15,13 @@ from src.bluetracker.__main__ import main
 class MainTestCase(TestCase):
     """Unittests for __main__."""
 
+    file_ = Path.cwd().joinpath('bluetracker_config.toml')
+    file_backup = None
+
     @classmethod
     def setUpClass(cls) -> None:
         """Inititalize before all tests."""
         logging.disable()
-
-        cls.file_ = Path.cwd().joinpath('bluetracker_config.toml')
-        cls.file_backup = None
 
         if cls.file_.exists():
             cls.file_backup = cls.file_.rename(f'{cls.file_}.bak')
@@ -29,7 +29,7 @@ class MainTestCase(TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         """Clean up after all tests."""
-        if cls.file_ and cls.file_.exists:
+        if cls.file_.exists():
             cls.file_.unlink()
 
         if cls.file_backup and cls.file_backup.exists():

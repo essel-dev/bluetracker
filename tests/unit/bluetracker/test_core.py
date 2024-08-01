@@ -164,18 +164,18 @@ class BlueTrackerTestCase(TestCase):
         config: BlueTrackerConfig = load_config(config_path)
 
         self.bluescanner = BlueScanner(
-            int(config.bluetooth['scan_interval']),
-            int(config.bluetooth['scan_timeout']),
-            int(config.bluetooth['consider_away']),
+            config.bluetooth['scan_interval'],
+            config.bluetooth['scan_timeout'],
+            config.bluetooth['consider_away'],
         )
 
         self.mqtt_client = MqttClient(
-            config.mqtt['host'],
+            str(config.mqtt['host']),
             int(config.mqtt['port']),
-            config.mqtt['username'],
-            config.mqtt['password'],
-            config.mqtt['homeassistant_token'],
-            config.mqtt['discovery_topic_prefix'],
+            str(config.mqtt['username']),
+            str(config.mqtt['password']),
+            str(config.mqtt['homeassistant_token']),
+            str(config.mqtt['discovery_topic_prefix']),
         )
 
         self.devices = [
@@ -200,16 +200,16 @@ class BlueTrackerTestCase(TestCase):
         unexpected_argument = 'unexpected_value'
 
         with self.assertRaises(BlueTrackerTypeError):
-            BlueTracker(unexpected_argument, self.mqtt_client, self.devices)
+            BlueTracker(unexpected_argument, self.mqtt_client, self.devices)  # type: ignore[arg-type]
 
         with self.assertRaises(BlueTrackerTypeError):
-            BlueTracker(self.bluescanner, unexpected_argument, self.devices)
+            BlueTracker(self.bluescanner, unexpected_argument, self.devices)  # type: ignore[arg-type]
 
         with self.assertRaises(BlueTrackerTypeError):
-            BlueTracker(self.bluescanner, self.mqtt_client, unexpected_argument)
+            BlueTracker(self.bluescanner, self.mqtt_client, unexpected_argument)  # type: ignore[arg-type]
 
         with self.assertRaises(BlueTrackerTypeError):
-            BlueTracker(self.bluescanner, self.mqtt_client, ['not a device', 0])
+            BlueTracker(self.bluescanner, self.mqtt_client, ['not a device', 0])  # type: ignore[list-item]
 
     def test_str(self) -> None:
         """Test __str__."""
@@ -426,8 +426,8 @@ class BlueTrackerTestCase(TestCase):
             mock_wait_until_homeassistant_online.return_value = True
 
             tracker = BlueTracker(mock_bluescanner, mock_mqtt_instance, [])
-            tracker._initialize_entities = mock_init_entities
-            tracker._wait_until_homeassistant_online = (
+            tracker._initialize_entities = mock_init_entities  # type: ignore[method-assign]
+            tracker._wait_until_homeassistant_online = (  # type: ignore[method-assign]
                 mock_wait_until_homeassistant_online
             )
 
@@ -448,7 +448,7 @@ class BlueTrackerTestCase(TestCase):
         bluetracker = BlueTracker(MagicMock(), MagicMock(), self.devices)
         bluetracker._scan_devices()
 
-        bluetracker.bluescanner.scan.assert_has_calls(
+        bluetracker.bluescanner.scan.assert_has_calls(  # type: ignore[attr-defined]
             [call(self.devices[0]), call(self.devices[1])],
         )
 

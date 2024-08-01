@@ -204,7 +204,7 @@ class BlueTracker:
         In case of a KeyboardInterrupt (e.g., Ctrl+C), the tracking process is stopped
         gracefully and the MQTT client connection is closed.
         """
-        _LOGGER.info('%s startup', __class__.__name__)
+        _LOGGER.info('%s startup', self.__class__.__name__)
 
         try:
             self.mqtt_client.start()
@@ -220,7 +220,7 @@ class BlueTracker:
                     _LOGGER.info('Sleeping %s seconds', self.bluescanner.scan_interval)
                     sleep(self.bluescanner.scan_interval)
                 else:
-                    self._wait_until_homeassistant_online()
+                    self._wait_until_homeassistant_online()  # type: ignore[unreachable]
                     self._initialize_entities()
         except KeyboardInterrupt:
             s = signal(SIGINT, SIG_IGN)
@@ -229,13 +229,13 @@ class BlueTracker:
 
             self.mqtt_client.stop()
 
-            _LOGGER.info('%s shutdown', __class__.__name__)
+            _LOGGER.info('%s shutdown', self.__class__.__name__)
 
             signal(SIGINT, s)
 
     def _publish_stop_tracking(self) -> None:
         """Sends MQTT messages to indicate server offline and device not_home status."""
-        _LOGGER.info('Stopping %s...', __class__.__name__)
+        _LOGGER.info('Stopping %s...', self.__class__.__name__)
 
         for device in self.devices:
             self.bluescanner.stop(device)

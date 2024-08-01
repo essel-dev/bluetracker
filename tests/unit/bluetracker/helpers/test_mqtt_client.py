@@ -53,7 +53,7 @@ class MqttClientTestCase(TestCase):
             patch.object(self.mqttc._client, 'subscribe') as mock_subscribe,  # noqa: SLF001
             patch('src.bluetracker.helpers.mqtt_client._LOGGER') as mock_logger,
         ):
-            self.mqttc._on_connect(None, None, None, 0)  # noqa: SLF001
+            self.mqttc._on_connect(None, None, None, 0)  # type: ignore[arg-type]  # noqa: SLF001
 
             self.assertTrue(self.mqttc.is_connected)
             self.assertTrue(self.mqttc.is_homeassistant_online)
@@ -77,7 +77,7 @@ class MqttClientTestCase(TestCase):
                 'homeassistant_token': 'your_token',
             }
 
-            client = MqttClient(**config)
+            client = MqttClient(**config)  # type: ignore[arg-type]
             client.start()
 
         self.assertEqual(cm.exception.code, 1)
@@ -85,7 +85,7 @@ class MqttClientTestCase(TestCase):
     def test_on_connect_failure(self) -> None:
         """Test on connect."""
         with patch('src.bluetracker.helpers.mqtt_client._LOGGER') as mock_logger:
-            self.mqttc._on_connect(None, None, None, 1)  # noqa: SLF001
+            self.mqttc._on_connect(None, None, None, 1)  # type: ignore[arg-type]  # noqa: SLF001
 
             self.assertFalse(self.mqttc.is_connected)
             self.assertFalse(self.mqttc.is_homeassistant_online)
@@ -104,7 +104,7 @@ class MqttClientTestCase(TestCase):
         )
 
         with patch.object(self.mqttc._client, 'connect', mock_connect) as mock_connect:  # noqa: SLF001
-            self.mqttc._client.loop_start = Mock()  # noqa: SLF001
+            self.mqttc._client.loop_start = Mock()  # type: ignore[method-assign]  # noqa: SLF001
 
             self.mqttc.start()
 

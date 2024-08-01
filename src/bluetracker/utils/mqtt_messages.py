@@ -1,5 +1,6 @@
 """MQTT client utilities module."""
 
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from enum import Enum, StrEnum
 from importlib.metadata import version as get_version
@@ -11,13 +12,11 @@ from socket import (
     socket,
 )
 from time import sleep
-from typing import Final
+from typing import Final, cast
 from uuid import getnode
 
-from bluetracker.helpers.mqtt_client import MqttClient
-from bluetracker.models.device import Device, DeviceType
-
-from .config import BlueTrackerConfig
+from ..helpers.mqtt_client import MqttClient  # noqa: TID252
+from ..models.device import Device, DeviceType  # noqa: TID252
 
 MAC: Final = ':'.join(f'{getnode():012x}'[i : i + 2] for i in range(0, 12, 2))
 
@@ -57,13 +56,13 @@ class TopicConfiguration:
     state_topic: str = field(default=f'~/{TopicType.STATE.value}')
     availability_topic: str = field(default=f'~/{TopicType.AVAIL.value}')
     json_attributes_topic: str = field(default=f'~/{TopicType.ATTR.value}')
-    device: dict[str, dict[str, str]] = field(default_factory=lambda: DEVICE)
+    device: dict[str, dict[str, str]] = field(default_factory=lambda: DEVICE)  # type: ignore[arg-type,return-value]
     source_type: str | None = field(default=None)
     device_class: str | None = field(default=None)
     entity_category: str | None = field(default=None)
     state_class: str | None = field(default=None)
 
-    def to_dict(self) -> dict[str : str | dict[str, str]]:
+    def to_dict(self) -> dict[str, Collection[str]]:
         """Get the topic configuration as a dictionary.
 
         Returns:
@@ -108,7 +107,7 @@ class MessageType(StrEnum):
 
 
 def publish(
-    item: str | BlueTrackerConfig | Device,
+    item: str | dict[str, Collection[object]] | Device,
     message_type: MessageType,
     topic_type: TopicType,
     mqttc: MqttClient,
@@ -127,13 +126,19 @@ def publish(
 
     match message_type:
         case MessageType.DEVICE:
-            messages = _device(item, topic_prefix, topic_type)
+            messages = _device(cast(Device, item), topic_prefix, topic_type)
         case MessageType.SERVER_STATUS:
-            messages = _server_status(item, topic_prefix, topic_type)
+            messages = _server_status(cast(str, item), topic_prefix, topic_type)
         case MessageType.SERVER_CONFIG:
             ip = _server_ip(topic_prefix)
-            bluetooth = _bluetooth_config(item['bluetooth'], topic_prefix)
-            devices = _tracking_devices_total(item['devices'], topic_prefix)
+            bluetooth = _bluetooth_config(
+                cast(dict[str, str], item['bluetooth']),  # type: ignore[index]
+                topic_prefix,
+            )
+            devices = _tracking_devices_total(
+                cast(list[Device], item['devices']),  # type: ignore[index]
+                topic_prefix,
+            )
 
             messages = ip + bluetooth + devices
 
