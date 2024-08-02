@@ -323,5 +323,5 @@ def _test_bluetooth_adapter() -> None:
     except (CalledProcessError, FileNotFoundError) as error:
         raise BluetoothNotFoundConfigError from error
 
-    if 'DOWN' in command.stdout.decode():
+    if 'UP RUNNING' not in command.stdout.decode():
         raise BluetoothNotRunningConfigError

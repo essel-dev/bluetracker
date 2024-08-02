@@ -63,10 +63,28 @@ class ConfigTestCase(TestCase):
             self.assertEqual(config.environment, Environment.PROD)
 
     @patch('src.bluetracker.utils.config.run')
-    def test_validate_bluetooth_fail_adapter(self, subprocess_mock: Mock) -> None:
+    def test_validate_bluetooth_fail_adapter_down(self, subprocess_mock: Mock) -> None:
         """Test validate bluetooth fail adapter."""
         mock_stdout = MagicMock()
         mock_stdout.configure_mock(**{'stdout.decode.return_value': 'DOWN'})
+        subprocess_mock.return_value = mock_stdout
+
+        config_path = f'{Path.cwd()}/tests/fixtures/config_production.toml'
+
+        with self.assertRaisesRegex(
+            BluetoothNotRunningConfigError,
+            'Bluetooth adapter not running',
+        ):
+            load_config(config_path)
+
+    @patch('src.bluetracker.utils.config.run')
+    def test_validate_bluetooth_fail_adapter_not_running(
+        self,
+        subprocess_mock: Mock,
+    ) -> None:
+        """Test validate bluetooth fail adapter."""
+        mock_stdout = MagicMock()
+        mock_stdout.configure_mock(**{'stdout.decode.return_value': ''})
         subprocess_mock.return_value = mock_stdout
 
         config_path = f'{Path.cwd()}/tests/fixtures/config_production.toml'
