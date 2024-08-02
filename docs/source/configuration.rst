@@ -1,8 +1,11 @@
-Configuration
-=============
+Configuration Options
+=====================
 
 On first startup, BlueTracker copies the default configuration from ``config.toml``
-to ``bluetracker_config.toml``:
+to ``bluetracker_config.toml``.
+
+This provides a template configuration file that users can easily modify to suit their
+specific MQTT broker settings and the devices they want to track.
 
 .. literalinclude:: ../../src/bluetracker/config.toml
     :language: python
@@ -19,8 +22,9 @@ The available options are shown in the table below.
    * - Name
      - Description
    * - ``environment``
-     - Environment to use. Supported formats are ``production``, ``development`` or ``testing``.
-       Not required.
+     - Sets the environment for the application (production, development, or testing).
+
+       This affects logging levels and other behaviors. Not required, defaults to production.
    * - ``bluetooth``
      - .. list-table:: Bluetooth settings
           :widths: auto

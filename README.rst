@@ -13,8 +13,9 @@ BlueTracker
 
 .. include_intro_start
 
-Monitor nearby Bluetooth Classic devices and seamlessly integrate them into your
-Home Assistant setup via MQTT, even with a modest Raspberry Pi Zero W.
+BlueTracker is a Python tool designed to seamlessly integrate your Bluetooth devices
+into Home Assistant. It periodically scans for nearby Bluetooth devices and reports
+their presence or absence to Home Assistant via MQTT.
 
 .. include_intro_end
 

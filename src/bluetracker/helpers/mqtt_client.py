@@ -65,11 +65,11 @@ class MqttClient:
 
     def _on_connect(  # type: ignore[no-untyped-def]
         self,
-        client,  # noqa: ARG002, ANN001
-        userdata: str,  # noqa: ARG002
-        flags,  # noqa: ARG002, ANN001
+        _client,  # noqa: ANN001
+        _userdata: str,
+        _flags,  # noqa: ANN001
         rc: int,
-        properties=None,  # noqa: ARG002, ANN001
+        _properties=None,  # noqa: ANN001
     ) -> None:
         """Handles the CONNACK response from the MQTT broker.
 
@@ -77,11 +77,7 @@ class MqttClient:
         connection.
 
         Args:
-            client: The MQTT client object (unused).
-            userdata: The user data provided to the client (optional, unused).
-            flags: The flags included in the CONNACK response (unused).
             rc: The reason code for the connection attempt.
-            properties: The connection acknowledgment properties (optional, unused).
         """
         if rc == 0:
             self.is_connected = True
@@ -103,21 +99,13 @@ class MqttClient:
 
     def _on_disconnect(  # type: ignore[no-untyped-def]
         self,
-        client,  # noqa: ARG002, ANN001
-        userdata,  # noqa: ARG002, ANN001
-        flags,  # noqa: ARG002, ANN001
-        rc,  # noqa: ARG002, ANN001
-        properties=None,  # noqa: ARG002, ANN001
+        _client,  # noqa: ANN001
+        _userdata,  # noqa: ANN001
+        _flags,  # noqa: ANN001
+        _rc,  # noqa: ANN001
+        _properties=None,  # noqa: ANN001
     ) -> None:
-        """Reconnect on disconnect.
-
-        Args:
-            client: The client.
-            userdata: The user data.
-            flags: The flags.
-            rc: The response code.
-            properties: The properties.
-        """
+        """Reconnect on disconnect."""
         self.is_connected = False
         self.is_homeassistant_online = False
 
