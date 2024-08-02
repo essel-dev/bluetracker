@@ -1,8 +1,9 @@
 """Unittests for bluetracker.utils.mqtt_messages."""
 
+from itertools import cycle
 from socket import gethostname
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from src.bluetracker.models.device import Device, DeviceType
 from src.bluetracker.utils.config import BlueTrackerConfig, Environment
@@ -19,7 +20,7 @@ class MqttMessagesTestCase(TestCase):
         self.mqttc_mock._discovery_topic_prefix = 'homeassistant'
 
         self.patcher_sleep = patch('src.bluetracker.utils.mqtt_messages.sleep')
-        self.mqttc_sleep = self.patcher_sleep.start()
+        self.mock_sleep = self.patcher_sleep.start()
 
     def tearDown(self) -> None:
         """Clean up after each test."""
@@ -155,3 +156,13 @@ class MqttMessagesTestCase(TestCase):
 
         self.assertEqual(calls[15][0][0], f'{tracking_devices}/attributes')
         self.assertEqual(calls[15][1], {'retain': False})
+
+    def test_publish_with_retries(self) -> None:
+        """Test that the publish function correctly retries when it fails."""
+        self.mqttc_mock.publish.side_effect = cycle([False, True])
+        device = Device('test device', 'aa:bb:cc:dd:ee:ff', DeviceType.BLUETOOTH)
+
+        publish(device, MessageType.DEVICE, TopicType.CONFIG, self.mqttc_mock)
+
+        self.assertEqual(self.mqttc_mock.publish.call_count, 4)
+        self.mock_sleep.assert_has_calls([call(0.1), call(0.1)])

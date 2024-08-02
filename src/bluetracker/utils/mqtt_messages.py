@@ -143,8 +143,9 @@ def publish(
             messages = ip + bluetooth + devices
 
     for message in messages:
-        mqttc.publish(message.topic, message.payload, retain=False)
-        sleep(0.5)  # Give messages time to get processed by the MQTT broker
+        while not mqttc.publish(message.topic, message.payload, retain=False):
+            # Give messages time to get processed by the MQTT broker
+            sleep(0.1)
 
 
 def _device(
