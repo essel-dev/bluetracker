@@ -1,9 +1,13 @@
 """Start BlueTracker application."""
 
 import sys
+from collections.abc import Callable
 from importlib.resources import files
+from logging import getLogger
 from pathlib import Path
 from shutil import copyfile
+from signal import SIGINT, signal
+from types import FrameType
 
 from bluetracker import BlueTracker
 from bluetracker.core import BlueScanner
@@ -11,6 +15,8 @@ from bluetracker.helpers.mqtt_client import MqttClient
 from bluetracker.models.device import Device, DeviceType
 from bluetracker.utils.config import BlueTrackerConfig, ConfigError, load_config
 from bluetracker.utils.logging import set_logging
+
+_LOGGER = getLogger(__name__)
 
 
 def _create_bluescanner(config: dict[str, int]) -> BlueScanner:
@@ -54,6 +60,40 @@ def _config_path() -> str:
     return dst_config.as_posix()
 
 
+def create_signal_handler(
+    tracker_instance: BlueTracker,
+) -> Callable[[int, FrameType | None], None]:
+    """Creates a signal handler for graceful shutdown on SIGINT.
+
+    This function returns a signal handler that is designed to be registered
+    for the SIGINT signal (e.g., triggered by Ctrl+C). When the signal is
+    received, the handler stops the BlueTracker instance, logs shutdown messages,
+    and then exits the application.
+
+    Args:
+        tracker_instance: The BlueTracker instance to stop on shutdown.
+
+    Returns:
+        A signal handler function.
+    """
+
+    def signal_handler(_signum: int, _frame: FrameType | None) -> None:
+        if signal_handler.called:  # type: ignore[attr-defined]
+            _LOGGER.info(
+                'BlueTracker already shutting down. This may take a few moments.',
+            )
+            return
+
+        signal_handler.called = True  # type: ignore[attr-defined]
+        _LOGGER.info('SIGINT received. Initiating graceful shutdown...')
+        tracker_instance.stop()
+        _LOGGER.info('%s shutdown complete', tracker_instance.__class__.__name__)
+        sys.exit(0)
+
+    signal_handler.called = False  # type: ignore[attr-defined]
+    return signal_handler
+
+
 def main() -> None:
     """Main entry point of the BlueTracker application.
 
@@ -77,7 +117,10 @@ def main() -> None:
     devices: list[Device] = _create_devices(config.devices)
 
     bluetracker = BlueTracker(scanner, mqtt_client, devices)
-    bluetracker.run()  # Start BlueTracker
+
+    signal(SIGINT, create_signal_handler(bluetracker))
+
+    bluetracker.run()
 
 
 if __name__ == '__main__':

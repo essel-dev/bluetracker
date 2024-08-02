@@ -340,10 +340,8 @@ class BlueTrackerTestCase(TestCase):
             mock_init_entities.assert_called_once()
 
             mock_scan_devices.assert_called_once()
-            self.assertEqual(mock_publish_devices.call_count, 2)
+            self.assertEqual(mock_publish_devices.call_count, 1)
             mock_sleep.assert_called_once_with(mock_bluescanner.scan_interval)
-
-            mock_mqtt_client.stop.assert_called()
 
     @patch('src.bluetracker.core.publish')
     @patch('src.bluetracker.core.isinstance', return_value=True)
@@ -382,10 +380,8 @@ class BlueTrackerTestCase(TestCase):
             mock_wait_until_homeassistant_online.assert_called_once()
 
             mock_scan_devices.assert_not_called()
-            mock_publish_devices.assert_called_once()
+            mock_publish_devices.assert_not_called()
             mock_sleep.assert_not_called()
-
-            mock_mqtt_instance.stop.assert_called()
 
     @patch('src.bluetracker.core.publish')
     @patch('src.bluetracker.core.isinstance', return_value=True)
@@ -440,7 +436,6 @@ class BlueTrackerTestCase(TestCase):
             mock_wait_until_homeassistant_online.assert_called()
             mock_scan_devices.assert_called()
             mock_publish_devices.assert_called()
-            mock_mqtt_instance.stop.assert_called_once()
 
     @patch('src.bluetracker.core.isinstance', return_value=True)
     def test_scan_devices(self, _: Mock) -> None:
@@ -494,3 +489,93 @@ class BlueTrackerTestCase(TestCase):
             )
 
             self.assertTrue(bluetracker.mqtt_client.is_homeassistant_online)
+
+    @patch('src.bluetracker.core.isinstance', return_value=True)
+    @patch('src.bluetracker.core._LOGGER')
+    @patch('src.bluetracker.core.BlueTracker._publish_stop_tracking')
+    def test_stop(
+        self,
+        mock_publish_stop_tracking: Mock,
+        mock_logger: Mock,
+        _: Mock,
+    ) -> None:
+        """Test the stop method of BlueTracker."""
+        mock_mqtt_client = Mock()
+        bluetracker = BlueTracker(self.bluescanner, mock_mqtt_client, self.devices)
+        bluetracker.stop()
+
+        mock_publish_stop_tracking.assert_called_once()
+        mock_mqtt_client.stop.assert_called_once()
+        mock_logger.info.assert_called_once_with(
+            '%s shutdown',
+            bluetracker.__class__.__name__,
+        )
+
+    @patch('src.bluetracker.core.isinstance', return_value=True)
+    @patch('src.bluetracker.core._LOGGER')
+    @patch('src.bluetracker.core.BlueTracker._publish_server_offline')
+    @patch('src.bluetracker.core.BlueTracker._publish_devices')
+    def test_publish_stop_tracking_connected(
+        self,
+        mock_publish_devices: Mock,
+        mock_publish_server_offline: Mock,
+        mock_logger: Mock,
+        _: Mock,
+    ) -> None:
+        """Test _publish_stop_tracking when MQTT is connected."""
+        mock_bluescanner = Mock()
+        mock_mqtt_client = Mock()
+        mock_mqtt_client.is_connected = True
+
+        bluetracker = BlueTracker(mock_bluescanner, mock_mqtt_client, self.devices)
+        bluetracker._publish_stop_tracking()
+
+        mock_bluescanner.stop.assert_has_calls(
+            [call(self.devices[0]), call(self.devices[1])],
+        )
+        mock_publish_server_offline.assert_called_once()
+        mock_publish_devices.assert_called_once()
+        mock_logger.info.assert_called_once_with(
+            'Stopping %s...',
+            bluetracker.__class__.__name__,
+        )
+
+    @patch('src.bluetracker.core.isinstance', return_value=True)
+    @patch('src.bluetracker.core._LOGGER')
+    @patch('src.bluetracker.core.BlueTracker._publish_server_offline')
+    @patch('src.bluetracker.core.BlueTracker._publish_devices')
+    def test_publish_stop_tracking_disconnected(
+        self,
+        mock_publish_devices: Mock,
+        mock_publish_server_offline: Mock,
+        *_: Mock,
+    ) -> None:
+        """Test _publish_stop_tracking when MQTT is disconnected."""
+        mock_bluescanner = Mock()
+        mock_mqtt_client = Mock()
+        mock_mqtt_client.is_connected = False
+
+        bluetracker = BlueTracker(mock_bluescanner, mock_mqtt_client, self.devices)
+        bluetracker._publish_stop_tracking()
+
+        mock_bluescanner.stop.assert_has_calls(
+            [call(self.devices[0]), call(self.devices[1])],
+        )
+        mock_publish_server_offline.assert_not_called()
+        mock_publish_devices.assert_not_called()
+
+    @patch('src.bluetracker.core.isinstance', return_value=True)
+    @patch('src.bluetracker.core.publish')
+    def test_publish_server_offline(self, mock_publish: Mock, _: Mock) -> None:
+        """Test _publish_server_offline publishes correctly."""
+        mock_mqtt_client = Mock()
+        tracker = BlueTracker(self.bluescanner, mock_mqtt_client, self.devices)
+
+        tracker._publish_server_offline()
+
+        mock_publish.assert_called_once_with(
+            'OFF',
+            MessageType.SERVER_STATUS,
+            TopicType.STATE,
+            mock_mqtt_client,
+        )

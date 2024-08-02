@@ -2,7 +2,6 @@
 
 from datetime import UTC, datetime
 from logging import getLogger
-from signal import SIG_IGN, SIGINT, signal
 from subprocess import CalledProcessError, TimeoutExpired, run
 from time import sleep
 from typing import Any
@@ -191,18 +190,15 @@ class BlueTracker:
     def run(self) -> None:
         """Main execution loop for the BlueTracker service.
 
-        - Initiates the MQTT client connection,
-        - initializes tracked entities,
-        - continuously scans for Bluetooth devices.
+        Initializes tracked entities and continuously scans for Bluetooth devices
+        when Home Assistant is online.
+
+        If Home Assistant is unavailable, the loop waits for it to come online before
+        resuming scanning.
 
         Discovered devices are published via MQTT to Home Assistant.
         The scan interval is determined by the configured `scan_interval` in the
         BlueScanner instance.
-
-        The loop waits for Home Assistant to come online if it is unavailable.
-
-        In case of a KeyboardInterrupt (e.g., Ctrl+C), the tracking process is stopped
-        gracefully and the MQTT client connection is closed.
         """
         _LOGGER.info('%s startup', self.__class__.__name__)
 
@@ -223,15 +219,15 @@ class BlueTracker:
                     self._wait_until_homeassistant_online()  # type: ignore[unreachable]
                     self._initialize_entities()
         except KeyboardInterrupt:
-            s = signal(SIGINT, SIG_IGN)
+            pass
 
-            self._publish_stop_tracking()
+    def stop(self) -> None:
+        """Gracefully stops BlueTracker service and closes MQTT client connection."""
+        self._publish_stop_tracking()
 
-            self.mqtt_client.stop()
+        self.mqtt_client.stop()
 
-            _LOGGER.info('%s shutdown', self.__class__.__name__)
-
-            signal(SIGINT, s)
+        _LOGGER.info('%s shutdown', self.__class__.__name__)
 
     def _publish_stop_tracking(self) -> None:
         """Sends MQTT messages to indicate server offline and device not_home status."""
