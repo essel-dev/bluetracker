@@ -21,6 +21,7 @@ release: str = get_version(project)
 extensions: list[str] = [
     'sphinx.ext.napoleon',
     'sphinx.ext.autosectionlabel',
+    'sphinx_copybutton',
 ]
 
 templates_path: list[str] = ['_templates']

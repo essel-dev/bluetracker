@@ -1,126 +1,145 @@
-Installation
-============
-
-.. note:: Instructions below have been tested on a Raspberry Pi Zero W Rev 1.1 and Zero 2.
+BlueTracker Installation Guide
+==============================
 
 
-On Home Assistant
-*****************
+.. note:: Tested on Debian and Raspbian with Raspberry Zero W Rev 1.1 and Zero 2.
+
+   While BlueTracker should work on other Linux distributions with BlueZ installed,
+   it has only been tested on the specified configurations.
+
+
+Prerequisites
+*************
+
+Before you begin, ensure you have the following:
+
+    - Hardware:
+
+      - A Linux system with Bluetooth.
+      - BlueZ must be installed, including the ``hciconfig`` and ``hcitool`` commands.
+
+    - Software:
+
+      - Home Assistant with MQTT Add-on and MQTT Integration installed.
+
+
+Installation on Home Assistant
+******************************
 
 Ensure following add-on and integration are installed on Home Assistant:
 
 - `MQTT Add-on <https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md/>`_: Broker to send/receive data from MQTT clients.
 - `MQTT Integration <https://www.home-assistant.io/integrations/mqtt/>`_: Receive updates from the MQTT broker add-on.
 
-On Raspberry
+Installation on Linux
+*********************
+
+#. Verify BlueZ Installation:
+
+   Before proceeding, make sure that BlueZ is correctly installed on your system::
+
+      dpkg -l | grep bluez
+
+
+#. Verify Bluetooth is running::
+
+      hciconfig
+
+
+   The output should look similar to this, indicating that your Bluetooth adapter is recognized and enabled::
+
+      hci0:	Type: Primary  Bus: UART
+         BD Address: XX:XX:XX:XX:XX:XX  ACL MTU: 1021:8  SCO MTU: 64:1
+         UP RUNNING
+         RX bytes:2911 acl:0 sco:0 events:217 errors:0
+         TX bytes:33155 acl:0 sco:0 commands:217 errors:0
+
+#. Create a Virtual Environment::
+
+      cd && mkdir bluetracker && cd bluetracker
+      python -m venv .env
+      source .env/bin/activate
+
+#. Install BlueTracker from PyPi::
+
+      pip install --upgrade pip setuptools bluetracker
+
+
+Configuration
 *************
 
-BlueTracker
-~~~~~~~~~~~
+#. Create Configuration File:
 
-Ensure bluetooth is working:
+   Run BlueTracker once to generate the configuration file (``bluetracker_config.toml``)::
 
-.. code-block:: console
+      bluetracker
 
-	hciconfig
+#. Edit Configuration:
 
-Set up a virtual environment:
+   - Open the config file using a text editor::
 
-.. code-block:: console
+       nano bluetracker_config.toml
 
-    cd && mkdir bluetracker && cd bluetracker
-    python -m venv .env
-    source .env/bin/activate
+   - For more information, please refer to the complete :doc:`BlueTracker configuration documentation <../configuration>`.
 
-Install the ``bluetracker`` package from PyPi:
+Running BlueTracker
+*******************
 
-.. code-block:: console
+#. Start BlueTracker::
 
-    pip install --upgrade pip setuptools
-    pip install bluetracker
+      bluetracker
 
-Run in the console:
+#. Check Home Assistant:
 
-.. code-block:: console
+   Once BlueTracker is running, bluetooth devices with their
+   state (``home`` or ``not_home``) and attributes are automatically added to
+   Home Assistant using the
+   `MQTT Discovery protocol <https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery>`_.
 
-    bluetracker
+   Find them under the MQTT devices section in Home Assistant:
 
-On the first run BlueTracker will create a configuration file in the current directory.
-
-Modify to:
-
-- update the Home Assistant MQTT server settings.
-- add bluetooth classic devices that should be tracked.
-
-Configuration options are avalable :doc:`here <../configuration>`.
-
-.. code-block:: console
-
-    nano bluetracker_config.toml
-
-Run again in the console:
-
-.. code-block:: console
-
-    bluetracker
-
-Once BlueTracker is running, bluetooth devices with their
-state (``home`` or ``not_home``) and attributes are automatically added to
-Home Assistant using the
-`MQTT Discovery protocol <https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery>`_.
-
-Find them under the MQTT devices section in Home Assistant:
-
-.. image:: https://my.home-assistant.io/badges/integration.svg
-    :target: https://my.home-assistant.io/redirect/integration/?domain=mqtt
-    :alt: Open your Home Assistant instance and show an integration.
+   .. image:: https://my.home-assistant.io/badges/integration.svg
+      :target: https://my.home-assistant.io/redirect/integration/?domain=mqtt
+      :alt: Open your Home Assistant instance and show an integration.
 
 
-systemd.service
-~~~~~~~~~~~~~~~
+Troubleshooting
+***************
 
-To run BlueTracker on system startup, create a systemd service.
+#. BlueTracker Not Starting:
 
-.. code-block:: console
+   - Check your configuration file for errors.
 
-    sudo nano /etc/systemd/system/bluetracker.service
+   - Look at the log file for any error messages::
 
-.. code-block:: console
+        cat bluetracker.log
 
-    [Unit]
-    Description=BlueTracker
-    After=network.target
+   - Devices Not Detected:
 
-    [Service]
-    Type=idle
-    User=pi
-    WorkingDirectory=/home/pi/bluetracker/
-    Environment="VIRTUAL_ENV=/home/pi/bluetracker/.env"
-    Environment="Environment=PATH=$VIRTUAL_ENV/bin:$PATH"
-    ExecStart=/home/pi/bluetracker/.env/bin/python .env/bin/bluetracker
-    Restart=on-failure
-    StartLimitInterval=60
-    StartLimitBurst=5
-    KillSignal=SIGINT
+     - Ensure your Bluetooth adapter is working and devices are within range.
+     - Verify that the MAC addresses are correctly listed in the config file.
 
-    [Install]
-    WantedBy=multi-user.target
+Running on System Startup (with cron)
+*************************************
 
-Load the service.
+To automatically start BlueTracker when your system boots and ensure it keeps running, you can set up a cron job.
 
-.. code-block:: console
+#. Download the `runner.sh <https://github.com/essel-dev/bluetracker/blob/master/scripts/runner.sh>`_  script::
 
-    sudo systemctl daemon-reload
-    sudo systemctl enable bluetracker.service --now
+      wget https://github.com/essel-dev/bluetracker/blob/master/scripts/runner.sh -O ~/bluetracker/runner.sh
 
-Check the status.
+#. Make it executable::
 
-.. code-block:: console
+      chmod +x ~/bluetracker/runner.sh
 
-    sudo systemctl status bluetracker.service
 
-Check the output.
+#. Schedule with Cron:
 
-.. code-block:: console
+   - Open your crontab file::
 
-    journalctl -u bluetracker.service -n 10
+        crontab -e
+
+   - Add the following lines to run the script every 5 minutes::
+
+        @reboot ~/bluetracker/runner.sh >> ~/bluetracker/cron.log 2>&1  # Start at boot
+        0 * * * * ~/bluetracker/runner.sh check >> ~/bluetracker/cron.log 2>&1 # Hourly check and restart (if not running)
