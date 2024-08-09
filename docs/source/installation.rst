@@ -96,50 +96,73 @@ Running BlueTracker
    Home Assistant using the
    `MQTT Discovery protocol <https://www.home-assistant.io/integrations/mqtt/#mqtt-discovery>`_.
 
+   For more detailed information on the entities created and their attributes, refer to
+   :doc:`Entities Explained in Detail <../entities>`.
+
    Find them under the MQTT devices section in Home Assistant:
 
    .. image:: https://my.home-assistant.io/badges/integration.svg
       :target: https://my.home-assistant.io/redirect/integration/?domain=mqtt
       :alt: Open your Home Assistant instance and show an integration.
 
+Running on System Startup
+*************************
 
-Troubleshooting
-***************
+To guarantee that BlueTracker automatically launches every time your system boots up
+and continues to run without interruption, you can configure a systemd service
+(responsible for initiating the program at boot time) and a cron job
+(tasked with regularly verifying that the program remains active).
 
-#. BlueTracker Not Starting:
+#. To run BlueTracker on system startup, create a systemd service.
 
-   - Check your configuration file for errors.
+   .. code-block:: console
 
-   - Look at the log file for any error messages::
+      sudo nano /etc/systemd/system/bluetracker.service
 
-        cat bluetracker.log
+   .. code-block:: console
 
-   - Devices Not Detected:
+      [Unit]
+      Description=BlueTracker
+      After=network.target
 
-     - Ensure your Bluetooth adapter is working and devices are within range.
-     - Verify that the MAC addresses are correctly listed in the config file.
+      [Service]
+      Type=idle
+      User=pi
+      WorkingDirectory=/home/pi/bluetracker/
+      Environment="VIRTUAL_ENV=/home/pi/bluetracker/.env"
+      Environment="Environment=PATH=$VIRTUAL_ENV/bin:$PATH"
+      ExecStart=/home/pi/bluetracker/.env/bin/python .env/bin/bluetracker
+      Restart=always
+      KillSignal=SIGINT
 
-Running on System Startup (with cron)
-*************************************
+      [Install]
+      WantedBy=multi-user.target
 
-To automatically start BlueTracker when your system boots and ensure it keeps running, you can set up a cron job.
+#. Load the service::
 
-#. Download the `runner.sh <https://github.com/essel-dev/bluetracker/blob/master/scripts/runner.sh>`_  script::
+      sudo systemctl daemon-reload
+      sudo systemctl enable bluetracker --now
 
-      wget https://github.com/essel-dev/bluetracker/blob/master/scripts/runner.sh -O ~/bluetracker/runner.sh
+#. Check the status::
 
-#. Make it executable::
+      sudo systemctl status bluetracker
 
-      chmod +x ~/bluetracker/runner.sh
+#. Check the output:
 
+   .. code-block:: console
+
+      journalctl -u bluetracker -n 10
+
+   .. code-block:: console
+
+      journalctl -u bluetracker -f
 
 #. Schedule with Cron:
 
    - Open your crontab file::
 
-        crontab -e
+        sudo crontab -u root -e
 
    - Add the following lines to run the script every 5 minutes::
 
-        @reboot ~/bluetracker/runner.sh >> ~/bluetracker/cron.log 2>&1  # Start at boot
-        0 * * * * ~/bluetracker/runner.sh check >> ~/bluetracker/cron.log 2>&1 # Hourly check and restart (if not running)
+        */5 * * * * pgrep -x bluetracker || /usr/sbin/service bluetracker start 2>&1
