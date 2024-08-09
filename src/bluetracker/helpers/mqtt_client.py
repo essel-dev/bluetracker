@@ -6,7 +6,7 @@ from socket import gaierror, gethostname
 from time import sleep
 from typing import Any
 
-from paho.mqtt.client import Client
+from paho.mqtt.client import Client, MQTTMessageInfo
 
 # mypy: disable-error-code="import-untyped"
 from paho.mqtt.enums import CallbackAPIVersion
@@ -140,9 +140,11 @@ class MqttClient:
         Returns:
             `True` if the message was published successfully, `False` otherwise.
         """
-        result = self._client.publish(topic, payload, retain=retain)
+        result: MQTTMessageInfo = self._client.publish(topic, payload, retain=retain)
+        result.wait_for_publish(timeout=10)
+        sleep(0.2)
 
-        if result[0] == 0:
+        if result.is_published():
             success = True
             _LOGGER.debug('Published %s', topic)
         else:

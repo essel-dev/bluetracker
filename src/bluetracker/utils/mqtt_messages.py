@@ -11,7 +11,6 @@ from socket import (
     gethostname,
     socket,
 )
-from time import sleep
 from typing import Final, cast
 from uuid import getnode
 
@@ -143,9 +142,7 @@ def publish(
             messages = ip + bluetooth + devices
 
     for message in messages:
-        while not mqttc.publish(message.topic, message.payload, retain=False):
-            # Give messages time to get processed by the MQTT broker
-            sleep(0.1)
+        mqttc.publish(message.topic, message.payload, retain=False)
 
 
 def _device(
