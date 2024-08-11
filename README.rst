@@ -22,16 +22,15 @@ their presence or absence to Home Assistant via MQTT.
 
 See it in action:
 
-.. raw:: html
-
-   <img src="https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-mqtt.png" alt="BlueTracker device state example" width="50%">
-
+.. image:: https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-mqtt.png
+  :target: https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-mqtt.png
+  :alt: BlueTracker device state example
 
 |
 
-.. raw:: html
-
-   <img src="https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-attributes.png" alt="BlueTracker device state example" width="50%">
+.. image:: https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-attributes.png
+  :target: https://raw.githubusercontent.com/essel-dev/bluetracker-hass-mqtt/master/docs/source/_static/example-attributes.png
+  :alt: BlueTracker device attributes example
 
 
 Resources
