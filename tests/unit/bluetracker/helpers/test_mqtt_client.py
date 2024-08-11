@@ -127,11 +127,19 @@ class MqttClientTestCase(TestCase):
 
     def test_publish(self) -> None:
         """Test publish."""
-        with patch.object(self.mqttc._client, 'publish', return_value=(0, 123)):  # noqa: SLF001
+        with patch.object(self.mqttc._client, 'publish') as mock_publish:  # noqa: SLF001
+            mock_result = MagicMock()
+            mock_result.is_published.return_value = True
+            mock_publish.return_value = mock_result
+
             result = self.mqttc.publish('unittest/test', 'testing', retain=False)
             self.assertTrue(result)
 
-        with patch.object(self.mqttc._client, 'publish', return_value=(1, 456)):  # noqa: SLF001
+        with patch.object(self.mqttc._client, 'publish') as mock_publish:  # noqa: SLF001
+            mock_result = MagicMock()
+            mock_result.is_published.return_value = False
+            mock_publish.return_value = mock_result
+
             result = self.mqttc.publish('unittest/test', 'testing', retain=False)
             self.assertFalse(result)
 
