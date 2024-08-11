@@ -10,7 +10,7 @@ from importlib.metadata import version as get_version
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project: str = 'BlueTracker'
+project: str = 'bluetracker-hass-mqtt'
 project_copyright: str = 'essel.dev'
 author: str = 'essel.dev'
 release: str = get_version(project)

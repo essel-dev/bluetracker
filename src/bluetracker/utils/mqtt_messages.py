@@ -32,7 +32,7 @@ DEVICE: Final = {
     'connections': [['mac', MAC]],
     'manufacturer': 'BlueTracker',
     'name': f'BlueTracker {HOSTNAME.title()}',
-    'sw_version': get_version('BlueTracker'),
+    'sw_version': get_version('bluetracker-hass-mqtt'),
 }
 
 
