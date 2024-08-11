@@ -35,8 +35,8 @@ readme = 'README.rst'
 requires-python = '>=3.11'
 
 dependencies = [
-  'paho-mqtt == 2.1.*',
-  'requests == 2.32.*',
+  'paho-mqtt >=2.0.0, <3.0.0',
+  'requests >=2.0.0, <3.0.0',
 ]
 
 [project.scripts]
