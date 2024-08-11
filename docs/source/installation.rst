@@ -119,6 +119,8 @@ and continues to run without interruption, you can configure a systemd service
 
       sudo nano /etc/systemd/system/bluetracker.service
 
+   .. note:: Replace '<your_username>' with the actual user
+
    .. code-block:: console
 
       [Unit]
@@ -127,11 +129,11 @@ and continues to run without interruption, you can configure a systemd service
 
       [Service]
       Type=idle
-      User=pi
-      WorkingDirectory=/home/pi/bluetracker/
-      Environment="VIRTUAL_ENV=/home/pi/bluetracker/.env"
-      Environment="Environment=PATH=$VIRTUAL_ENV/bin:$PATH"
-      ExecStart=/home/pi/bluetracker/.env/bin/python .env/bin/bluetracker
+      User=<your_username>
+      WorkingDirectory=/home/<your_username>/bluetracker/
+      Environment="VIRTUAL_ENV=/home/<your_username>/bluetracker/.env"
+      Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
+      ExecStart=/home/<your_username>/bluetracker/.env/bin/python .env/bin/bluetracker
       Restart=always
       KillSignal=SIGINT
 
