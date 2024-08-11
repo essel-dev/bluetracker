@@ -39,7 +39,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/bluetracker
+      url: https://test.pypi.org/p/bluetracker-hass-mqtt
 
     permissions:
       id-token: write
