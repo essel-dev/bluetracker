@@ -2,11 +2,11 @@ BlueTracker
 ===========
 
 
-.. image:: https://github.com/essel-dev/bluetracker-hass-mqtt/actions/workflows/tests.yml/badge.svg
-    :target: https://github.com/essel-dev/bluetracker-hass-mqtt/actions/workflows/tests.yml
+.. image:: https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml
 
-.. image:: https://github.com/essel-dev/bluetracker-hass-mqtt/actions/workflows/pypi.yml/badge.svg
-    :target: https://github.com/essel-dev/bluetracker-hass-mqtt/actions/workflows/pypi.yml
+.. image:: https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml/badge.svg
+    :target: https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml
 
 |
 
@@ -23,18 +23,18 @@ their presence or absence to Home Assistant via MQTT.
 See it in action:
 
 .. image:: docs/source/_static/example-mqtt.png
-  :target: https://github.com/essel-dev/bluetracker-hass-mqtt/blob/master/docs/source/_static/example-mqtt.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-mqtt.png
   :alt: BlueTracker device state example
 
 |
 
 .. image:: docs/source/_static/example-attributes.png
-  :target: https://github.com/essel-dev/bluetracker-hass-mqtt/blob/master/docs/source/_static/example-attributes.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-attributes.png
   :alt: BlueTracker device attributes example
 
 
 Resources
 ---------
 
-- `bluetracker-hass-mqtt @ Read the Docs <https://bluetracker-hass-mqtt.readthedocs.io/>`_
-- `bluetracker-hass-mqtt @ PyPI <https://pypi.org/project/bluetracker-hass-mqtt/>`_
+- `BlueTracker @ Read the Docs <https://bluetracker.readthedocs.io/>`_
+- `BlueTracker @ PyPI <https://pypi.org/project/bluetracker/>`_

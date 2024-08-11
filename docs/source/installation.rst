@@ -62,7 +62,7 @@ Installation on Linux
 
 #. Install BlueTracker from PyPi::
 
-      pip install --upgrade pip setuptools bluetracker-hass-mqtt
+      pip install --upgrade pip setuptools bluetracker
 
 
 Configuration

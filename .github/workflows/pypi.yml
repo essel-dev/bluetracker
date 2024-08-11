@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/bluetracker-hass-mqtt
+      url: https://pypi.org/p/bluetracker
 
     permissions:
       id-token: write
