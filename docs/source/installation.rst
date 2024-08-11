@@ -163,6 +163,6 @@ and continues to run without interruption, you can configure a systemd service
 
         sudo crontab -u root -e
 
-   - Add the following lines to run the script every 5 minutes::
+   - Add the following line to start the service every 5 minutes, if it is not running::
 
-        */5 * * * * pgrep -x bluetracker || /usr/sbin/service bluetracker start 2>&1
+        */5 * * * * pgrep -x bluetracker > /dev/null || /usr/sbin/service bluetracker start 2>&1
