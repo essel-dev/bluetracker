@@ -12,7 +12,7 @@ bluetracker = [
 
 [project]
 description = 'Monitor Bluetooth Classic devices and integrate them into Home Assistant via MQTT.'
-name = 'bluetracker'
+name = 'bluetracker-hass-mqtt'
 
 authors = [{name = 'essel-dev'}]
 classifiers = [
@@ -24,10 +24,10 @@ classifiers = [
 ]
 dynamic = ['version']
 keywords = [
-  'device-tracker',
-  'bluetooth-classic',
-  'home-assistant',
-  'raspberry-pi',
+  'device tracker',
+  'bluetooth classic',
+  'home assistant',
+  'raspberry pi',
   'mqtt',
 ]
 license = {file = 'LICENSE'}
@@ -43,10 +43,10 @@ dependencies = [
 bluetracker = 'bluetracker.__main__:main'
 
 [project.urls]
-'Bug Tracker' = 'https://github.com/essel-dev/bluetracker/issues'
-'Changelog' = 'https://github.com/essel-dev/bluetracker/releases'
-'Documentation' = 'https://bluetracker.readthedocs.io/'
-'GitHub' = 'https://github.com/essel-dev/bluetracker'
+'Bug Tracker' = 'https://github.com/essel-dev/bluetracker-hass-mqtt/issues'
+'Changelog' = 'https://github.com/essel-dev/bluetracker-hass-mqtt/releases'
+'Documentation' = 'https://bluetracker-hass-mqtt.readthedocs.io/'
+'GitHub' = 'https://github.com/essel-dev/bluetracker-hass-mqtt'
 
 [project.optional-dependencies]
 dev = [
