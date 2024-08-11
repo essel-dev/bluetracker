@@ -1,0 +1,40 @@
+BlueTracker
+===========
+
+
+.. image:: https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/essel-dev/bluetracker/actions/workflows/tests.yml
+
+.. image:: https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml/badge.svg
+    :target: https://github.com/essel-dev/bluetracker/actions/workflows/pypi.yml
+
+|
+
+
+.. include_intro_start
+
+BlueTracker is a Python tool designed to seamlessly integrate your Bluetooth devices
+into Home Assistant. It periodically scans for nearby Bluetooth devices and reports
+their presence or absence to Home Assistant via MQTT.
+
+.. include_intro_end
+
+
+See it in action:
+
+.. image:: docs/source/_static/example-mqtt.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-mqtt.png
+  :alt: BlueTracker device state example
+
+|
+
+.. image:: docs/source/_static/example-attributes.png
+  :target: https://github.com/essel-dev/bluetracker/blob/master/docs/source/_static/example-attributes.png
+  :alt: BlueTracker device attributes example
+
+
+Resources
+---------
+
+- `BlueTracker @ Read the Docs <https://bluetracker.readthedocs.io/>`_
+- `BlueTracker @ PyPI <https://pypi.org/project/bluetracker/>`_
