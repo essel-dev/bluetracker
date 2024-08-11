@@ -119,7 +119,7 @@ and continues to run without interruption, you can configure a systemd service
 
       sudo nano /etc/systemd/system/bluetracker.service
 
-   .. note:: Replace '<your_username>' with the actual user
+   .. note:: Replace ``<your_username>`` with the actual user
 
    .. code-block:: console
 
