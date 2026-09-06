@@ -16,6 +16,8 @@ name = 'bluetracker-hass-mqtt'
 
 authors = [{name = 'essel-dev'}]
 classifiers = [
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
   'Programming Language :: Python :: 3.13',
   'Typing :: Typed',
   'License :: OSI Approved :: MIT License',
@@ -31,7 +33,7 @@ keywords = [
 ]
 license = {file = 'LICENSE'}
 readme = 'README.rst'
-requires-python = '>=3.13'
+requires-python = '>=3.11'
 
 dependencies = [
   'paho-mqtt == 2.1.*',
@@ -60,7 +62,7 @@ dev = [
 legacy_tox_ini = """
 	[tox]
 	envlist =
-		py{313}
+		py{311,312,313}
         ruff-format
 		ruff-lint
 		mypy
@@ -107,6 +109,7 @@ legacy_tox_ini = """
 
 	[gh-actions]
 	python =
+		3.11: py311
 		3.13: py313, ruff-lint, ruff-format, mypy, darglint
 """
 
