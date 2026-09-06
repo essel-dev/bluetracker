@@ -16,8 +16,7 @@ name = 'bluetracker-hass-mqtt'
 
 authors = [{name = 'essel-dev'}]
 classifiers = [
-  'Programming Language :: Python :: 3.11',
-  'Programming Language :: Python :: 3.12',
+  'Programming Language :: Python :: 3.13',
   'Typing :: Typed',
   'License :: OSI Approved :: MIT License',
   'Operating System :: POSIX :: Linux',
@@ -32,11 +31,11 @@ keywords = [
 ]
 license = {file = 'LICENSE'}
 readme = 'README.rst'
-requires-python = '>=3.11'
+requires-python = '>=3.13'
 
 dependencies = [
   'paho-mqtt == 2.1.*',
-  'requests == 2.32.*',
+  'requests == 2.34.2',
 ]
 
 [project.scripts]
@@ -61,7 +60,7 @@ dev = [
 legacy_tox_ini = """
 	[tox]
 	envlist =
-		py{311,312}
+		py{313}
         ruff-format
 		ruff-lint
 		mypy
@@ -75,7 +74,7 @@ legacy_tox_ini = """
 	deps = coverage
 	commands =
 		coverage run -m unittest discover
-		py312: coverage report -m
+		py313: coverage report -m
 
 	[testenv:ruff-lint]
 	deps = ruff
@@ -108,8 +107,7 @@ legacy_tox_ini = """
 
 	[gh-actions]
 	python =
-		3.11: py311
-		3.12: py312, ruff-lint, ruff-format, mypy, darglint
+		3.13: py313, ruff-lint, ruff-format, mypy, darglint
 """
 
 [tool.coverage.run]
@@ -119,6 +117,9 @@ source = [
 
 [tool.ruff.lint]
 ignore = [
+  'A004', # builtin shadowing
+  'CPY', # copyright headers
+  'PLR0917', # positional args count
   'PT', # pytest
 ]
 select = [

@@ -87,12 +87,12 @@ from .models.device import (
 )
 
 __all__ = [
+    'BlueScanner',
     'BlueTracker',
     'BlueTrackerTypeError',
-    'BlueScanner',
-    'MqttClient',
     'Device',
-    'DeviceState',
     'DeviceResponse',
+    'DeviceState',
     'DeviceType',
+    'MqttClient',
 ]

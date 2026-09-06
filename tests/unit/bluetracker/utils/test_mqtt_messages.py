@@ -38,10 +38,10 @@ class MqttMessagesTestCase(TestCase):
         self.assertEqual(self.mqttc_mock.publish.call_count, 2)
 
         self.assertEqual(call_1[0][0], f'{topic}/config')
-        self.assertEqual(call_1[1], {'retain': False})
+        self.assertEqual(call_1[1], {'retain': True})
 
         self.assertEqual(call_2[0][0], f'{topic}/availability')
-        self.assertEqual(call_2[1], {'retain': False})
+        self.assertEqual(call_2[1], {'retain': True})
 
         self.mqttc_mock.reset_mock()
 
@@ -71,10 +71,10 @@ class MqttMessagesTestCase(TestCase):
         self.assertEqual(self.mqttc_mock.publish.call_count, 2)
 
         self.assertEqual(call_1[0][0], f'{topic}/config')
-        self.assertEqual(call_1[1], {'retain': False})
+        self.assertEqual(call_1[1], {'retain': True})
 
         self.assertEqual(call_2[0][0], f'{topic}/availability')
-        self.assertEqual(call_2[1], {'retain': False})
+        self.assertEqual(call_2[1], {'retain': True})
 
         self.mqttc_mock.reset_mock()
 
@@ -129,10 +129,10 @@ class MqttMessagesTestCase(TestCase):
 
         ip_address = f'{topic}_ip_address'
         self.assertEqual(calls[0][0][0], f'{ip_address}/config')
-        self.assertEqual(calls[0][1], {'retain': False})
+        self.assertEqual(calls[0][1], {'retain': True})
 
         self.assertEqual(calls[1][0][0], f'{ip_address}/availability')
-        self.assertEqual(calls[1][1], {'retain': False})
+        self.assertEqual(calls[1][1], {'retain': True})
 
         self.assertEqual(calls[2][0][0], f'{ip_address}/state')
         self.assertEqual(calls[2][1], {'retain': False})
@@ -141,10 +141,10 @@ class MqttMessagesTestCase(TestCase):
 
         tracking_devices = f'{topic}_tracking_devices'
         self.assertEqual(calls[12][0][0], f'{tracking_devices}/config')
-        self.assertEqual(calls[12][1], {'retain': False})
+        self.assertEqual(calls[12][1], {'retain': True})
 
         self.assertEqual(calls[13][0][0], f'{tracking_devices}/availability')
-        self.assertEqual(calls[13][1], {'retain': False})
+        self.assertEqual(calls[13][1], {'retain': True})
 
         self.assertEqual(calls[14][0][0], f'{tracking_devices}/state')
         self.assertEqual(calls[14][1], {'retain': False})

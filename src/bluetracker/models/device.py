@@ -37,7 +37,7 @@ class Device:
 
     name: str
     mac: str
-    source_type: DeviceType
+    source_type: DeviceType = DeviceType.BLUETOOTH
     last_seen: datetime = field(default_factory=lambda: datetime.now(UTC))
     state: DeviceState = DeviceState.NOT_HOME
     reason: DeviceResponse = DeviceResponse.SETUP

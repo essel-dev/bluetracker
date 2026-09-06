@@ -60,14 +60,15 @@ class TopicConfiguration:
     device_class: str | None = field(default=None)
     entity_category: str | None = field(default=None)
     state_class: str | None = field(default=None)
+    mac: str | None = field(default=None)
 
     def to_dict(self) -> dict[str, Collection[str]]:
         """Get the topic configuration as a dictionary.
 
         Returns:
-            The topic configuratio as a dictionary.
+            The topic configuration as a dictionary.
         """
-        config = {
+        config: dict[str, Collection[str]] = {
             'name': self.name,
             'unique_id': self.unique_id,
             '~': self.topic,
@@ -79,6 +80,8 @@ class TopicConfiguration:
 
         if self.source_type:
             config['source_type'] = self.source_type
+        if self.mac:
+            config['mac'] = self.mac
         if self.device_class:
             config['device_class'] = self.device_class
         if self.entity_category:
@@ -111,12 +114,12 @@ def publish(
     topic_type: TopicType,
     mqttc: MqttClient,
 ) -> None:
-    """Publish a message to an MQTT broker.
+    """Publish MQTT messages based on message and topic types.
 
     Args:
-        item: The item that should be published.
+        item: The item to publish.
         message_type: The MQTT message type.
-        topic_type: The MQTT topic type to publish.
+        topic_type: The MQTT topic type.
         mqttc: The MQTT client.
     """
     topic_prefix = mqttc._discovery_topic_prefix  # noqa: SLF001
@@ -125,24 +128,27 @@ def publish(
 
     match message_type:
         case MessageType.DEVICE:
-            messages = _device(cast(Device, item), topic_prefix, topic_type)
+            messages = _device(cast('Device', item), topic_prefix, topic_type)
         case MessageType.SERVER_STATUS:
-            messages = _server_status(cast(str, item), topic_prefix, topic_type)
+            messages = _server_status(cast('str', item), topic_prefix, topic_type)
         case MessageType.SERVER_CONFIG:
             ip = _server_ip(topic_prefix)
             bluetooth = _bluetooth_config(
-                cast(dict[str, str], item['bluetooth']),  # type: ignore[index]
+                cast('dict[str, str]', item['bluetooth']),  # type: ignore[index]
                 topic_prefix,
             )
             devices = _tracking_devices_total(
-                cast(list[Device], item['devices']),  # type: ignore[index]
+                cast('list[Device]', item['devices']),  # type: ignore[index]
                 topic_prefix,
             )
 
             messages = ip + bluetooth + devices
 
     for message in messages:
-        mqttc.publish(message.topic, message.payload, retain=False)
+        retain = message.topic.endswith(
+            f'/{TopicType.CONFIG.value}',
+        ) or message.topic.endswith(f'/{TopicType.AVAIL.value}')
+        mqttc.publish(message.topic, message.payload, retain=retain)
 
 
 def _device(
@@ -158,11 +164,12 @@ def _device(
     # https://github.com/python/mypy/issues/12545 match case with enums
     match topic_type:
         case topic_type.CONFIG | topic_type.AVAIL:
-            config = TopicConfiguration(  # type: ignore[unreachable]
+            config = TopicConfiguration(
                 name=f'{device.name}',
                 unique_id=f'{HOSTNAME}_{device.name}',
                 topic=topic,
                 source_type=DeviceType.BLUETOOTH.value,
+                mac=device.mac,
             )
 
             messages = [
@@ -177,7 +184,7 @@ def _device(
             ]
 
         case topic_type.STATE | topic_type.ATTR:
-            messages = [  # type: ignore[unreachable]
+            messages = [
                 Message(
                     topic=f'{topic}/{TopicType.STATE.value}',
                     payload=device.state.value,
@@ -203,7 +210,7 @@ def _server_status(
     # https://github.com/python/mypy/issues/12545 match case with enums
     match topic_type:
         case topic_type.CONFIG | topic_type.AVAIL:
-            config = TopicConfiguration(  # type: ignore[unreachable]
+            config = TopicConfiguration(
                 name='Running',
                 unique_id=f'{HOSTNAME}_running',
                 device_class='running',
@@ -222,7 +229,7 @@ def _server_status(
             ]
 
         case topic_type.STATE | topic_type.ATTR:
-            messages = [  # type: ignore[unreachable]
+            messages = [
                 Message(
                     topic=f'{topic}/{TopicType.STATE.value}',
                     payload=state,

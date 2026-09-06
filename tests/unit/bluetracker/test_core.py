@@ -238,8 +238,9 @@ class BlueTrackerTestCase(TestCase):
         mock_mqtt_client.publish.side_effect = (
             lambda topic,
             payload,  # noqa: ARG005
-            retain=False:  # noqa: ARG005
-            topic.replace('homeassistant/', ''),
+            retain=False: (  # noqa: ARG005
+                topic.replace('homeassistant/', '')
+            ),
         )
 
         mock_scanner = MagicMock()
