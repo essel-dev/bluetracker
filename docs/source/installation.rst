@@ -57,12 +57,12 @@ Installation on Linux
 #. Create a Virtual Environment::
 
       cd && mkdir bluetracker && cd bluetracker
-      python -m venv .env
+      uv venv .env
       source .env/bin/activate
 
 #. Install BlueTracker from PyPi::
 
-      pip install --upgrade pip setuptools bluetracker-hass-mqtt
+      uv pip install bluetracker-hass-mqtt
 
 
 Configuration
@@ -72,7 +72,7 @@ Configuration
 
    Run BlueTracker once to generate the configuration file (``bluetracker_config.toml``)::
 
-      bluetracker
+      uv run bluetracker
 
 #. Edit Configuration:
 
@@ -87,7 +87,7 @@ Running BlueTracker
 
 #. Start BlueTracker::
 
-      bluetracker
+      uv run bluetracker
 
 #. Check Home Assistant:
 
@@ -133,7 +133,7 @@ and continues to run without interruption, you can configure a systemd service
       WorkingDirectory=/home/<your_username>/bluetracker/
       Environment="VIRTUAL_ENV=/home/<your_username>/bluetracker/.env"
       Environment="PATH=$VIRTUAL_ENV/bin:$PATH"
-      ExecStart=/home/<your_username>/bluetracker/.env/bin/python .env/bin/bluetracker
+      ExecStart=/home/<your_username>/bluetracker/.env/bin/bluetracker
       Restart=always
       KillSignal=SIGINT
 

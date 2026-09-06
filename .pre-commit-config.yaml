@@ -8,6 +8,8 @@ repos:
   - id: check-toml
   - id: debug-statements
   - id: double-quote-string-fixer
+  - id: no-commit-to-branch
+    args: [--branch, master]
 
 - repo: local
   hooks:
